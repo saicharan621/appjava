@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     stages {
-        stage('git checkout') {
+        stage('Git Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/saicharan621/appjava.git'
             }
@@ -11,13 +11,11 @@ pipeline {
             steps {
                 sh 'mvn test'
             }
-        stage('Unit Testing') {
+        }
+        stage('Integration Testing') {
             steps {
-                sh 'mvn verify -DskipUnitTests'
-            }    
-
-    
+                sh 'mvn verify -DskipTests'
+            }
         }
     }
-    
 }
