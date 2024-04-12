@@ -69,5 +69,15 @@ pipeline {
                 }
             }
         }
+        stage('docker image build')
+           
+             steps{
+
+                 script {
+                    sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID'
+                    sh 'docker image $JOB_NAME:v1.$BUILD_ID saicharan6771/$JOB_NAME:v1.$BUILD_ID'
+                    sh 'docker image $JOB_NAME:v1.$BUILD_ID saicharan6771/$JOB_NAME:latest'
+                 }
+             }
     }
 }
