@@ -52,12 +52,13 @@ pipeline {
                     def readPomVersion = readMavenPom file: 'pom.xml'
 
                     def nexusRepo = readPomVersion.version.endsWith("SNAPSHOT") ? "demoapp-snapshot" : "demoapp-release"
-                    nexusArtifactUploader artifacts: 
-                    [
-                        [artifactId: 'springboot', 
-                        classifier: '', file: 'target/Uber.jar', 
-                        type: 'jar'
-                         ]
+                    nexusArtifactUploader artifacts: [
+                        [
+                            artifactId: 'springboot', 
+                            classifier: '', 
+                            file: 'target/Uber.jar', 
+                            type: 'jar'
+                        ]
                     ], 
                     credentialsId: 'nexus-auth', 
                     groupId: 'com.example', 
@@ -69,15 +70,14 @@ pipeline {
                 }
             }
         }
-        stage('docker image build')
-           
-             steps{
-
-                 script {
+        stage('docker image build') {
+            steps {
+                script {
                     sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID'
                     sh 'docker image $JOB_NAME:v1.$BUILD_ID saicharan6771/$JOB_NAME:v1.$BUILD_ID'
                     sh 'docker image $JOB_NAME:v1.$BUILD_ID saicharan6771/$JOB_NAME:latest'
-                 }
-             }
+                }
+            }
+        }
     }
 }
