@@ -4,30 +4,47 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/saicharan621/appjava.git'
+                script {
+                    git branch: 'main', url: 'https://github.com/saicharan621/appjava.git'
+                }
             }
         }
         stage('Unit Testing') {
             steps {
-                sh 'mvn test'
+                script {
+                    sh 'mvn test'
+                }
             }
         }
         stage('Integration Testing') {
             steps {
-                sh 'mvn verify -DskipTests'
+                script {
+                    sh 'mvn verify -DskipTests'
+                }
             }
         }
         stage('Maven Build') {
             steps {
-                sh 'mvn clean install'
+                script {
+                    sh 'mvn clean install'
+                }
             }
         }
     }
     post {
         always {
-            script {                
+            script {
+                // Perform SonarQube analysis
                 withSonarQubeEnv('sonarserver') {
                     sh 'mvn clean package sonar:sonar'
+                }
+                // Wait for Quality Gate status
+                stage('Quality Gate Status') {
+                    steps {
+                        script {
+                            waitForQualityGate abortPipeline: false, credentialsId: 'sonar-api'
+                        }
+                    }
                 }
             }
         }
