@@ -1,52 +1,73 @@
-pipeline {
-    agent any
+pipeline{
+    
+    agent any 
     
     stages {
-        stage('Git Checkout') {
-            steps {
-                script {
+        
+        stage('Git Checkout'){
+            
+            steps{
+                
+                script{
+                    
                     git branch: 'main', url: 'https://github.com/saicharan621/appjava.git'
                 }
             }
         }
-        stage('Unit Testing') {
-            steps {
-                script {
+        stage('UNIT testing'){
+            
+            steps{
+                
+                script{
+                    
                     sh 'mvn test'
                 }
             }
         }
-        stage('Integration Testing') {
-            steps {
-                script {
-                    sh 'mvn verify -DskipTests'
+        stage('Integration testing'){
+            
+            steps{
+                
+                script{
+                    
+                    sh 'mvn verify -DskipUnitTests'
                 }
             }
         }
-        stage('Maven Build') {
-            steps {
-                script {
+        stage('Maven build'){
+            
+            steps{
+                
+                script{
+                    
                     sh 'mvn clean install'
                 }
             }
         }
-    }
-    post {
-        always {
-            // Perform SonarQube analysis
-            script {                
-                withSonarQubeEnv('sonarserver') {
-                    sh 'mvn clean package sonar:sonar'
+        stage('Static code analysis'){
+            
+            steps{
+                
+                script{
+                    
+                    withSonarQubeEnv(credentialsId: 'sonar-api') {
+                        
+                        sh 'mvn clean package sonar:sonar'
+                    }
+                   }
+                    
                 }
             }
-            // Wait for Quality Gate status
-            stage('Quality Gate Status') {
-                steps {
-                    script {
+            stage('Quality Gate Status'){
+                
+                steps{
+                    
+                    script{
+                        
                         waitForQualityGate abortPipeline: false, credentialsId: 'sonar-api'
                     }
                 }
             }
         }
-    }
+        
 }
