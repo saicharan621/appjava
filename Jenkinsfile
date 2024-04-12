@@ -33,7 +33,7 @@ pipeline {
     }
     post {
         always {
-            script {
+            script {                
                 // Perform SonarQube analysis
                 withSonarQubeEnv('sonarserver') {
                     sh 'mvn clean package sonar:sonar'
