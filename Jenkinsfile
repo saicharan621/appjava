@@ -33,17 +33,17 @@ pipeline {
     }
     post {
         always {
+            // Perform SonarQube analysis
             script {                
-                // Perform SonarQube analysis
                 withSonarQubeEnv('sonarserver') {
                     sh 'mvn clean package sonar:sonar'
                 }
-                // Wait for Quality Gate status
-                stage('Quality Gate Status') {
-                    steps {
-                        script {
-                            waitForQualityGate abortPipeline: false, credentialsId: 'sonar-api'
-                        }
+            }
+            // Wait for Quality Gate status
+            stage('Quality Gate Status') {
+                steps {
+                    script {
+                        waitForQualityGate abortPipeline: false, credentialsId: 'sonar-api'
                     }
                 }
             }
