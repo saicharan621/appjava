@@ -25,14 +25,12 @@ pipeline {
     }
     post {
         always {
-            stage('Static Code Analysis') {
-                steps {
-                    withSonarQubeEnv(credentialsId: 'sonar-api') {
-                        sh 'mvn clean package sonar:sonar'
-                    }
+            script {
+                // Use the 'withSonarQubeEnv' step with the correct installation name
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn clean package sonar:sonar'
                 }
             }
         }
     }
 }
-    
