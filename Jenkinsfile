@@ -27,7 +27,7 @@ pipeline {
         always {
             script {
                 // Use the 'withSonarQubeEnv' step with the correct installation name
-                withSonarQubeEnv('Sonar-api') {
+                withSonarQubeEnv('sonar-api') {
                     sh 'mvn clean package sonar:sonar'
                 }
             }
