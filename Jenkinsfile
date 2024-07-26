@@ -3,10 +3,10 @@ pipeline {
 
     stages{
 
-        stage('git checkou'{
+        stage('git checkou'){
             steps{
                 git branch: 'main', url: 'https://github.com/saicharan621/appjava.git'
             }
-        })
+        }
     }
 }
