@@ -34,7 +34,7 @@ pipeline {
 
                 script{
 
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonarqube-api'
+                    waitForQualityGate abortPipeline: false
                 }
             }
         }
