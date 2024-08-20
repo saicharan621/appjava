@@ -29,34 +29,31 @@ pipeline {
                 }
             }
         }
-        stage('quality gate status') {
+        stage('Quality Gate Status') {
             steps {
-
-                script{
-
+                script {
                     waitForQualityGate abortPipeline: false
                 }
             }
         }
-        stage('upload war to nexus') {
+        stage('Upload WAR to Nexus') {
             steps {
-                script{
-                    nexusArtifactUploader artifacts:
-                     [
+                script {
+                    nexusArtifactUploader artifacts: [
                         [
-                            artifactId: 'springboot', 
-                            classifier: '', 
-                            file: 'target/Uber.jar', 
+                            artifactId: 'springboot',
+                            classifier: '',
+                            file: 'target/Uber.jar',
                             type: 'jar'
-                            ]
-                            ], 
-                            credentialsId: 'nexus-auth', 
-                            groupId: 'com.example', 
-                            nexusUrl: '13.126.97.72:8081', 
-                            nexusVersion: 'nexus3', 
-                            protocol: 'http', 
-                            repository: 'maven-releases', 
-                            version: '1.0.0'
+                        ]
+                    ],
+                    credentialsId: 'nexus-auth',
+                    groupId: 'com.example',
+                    nexusUrl: 'http://13.126.97.72:8081',
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    repository: 'maven-releases',
+                    version: '1.0.0'
                 }
             }
         }
