@@ -86,8 +86,8 @@ pipeline {
         stage('Push Docker Image to DockerHub') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'dockerhub_password', variable: 'DOCKER_HUB_PASS')]) {
-                        sh 'docker login -u saicharan6771 -p ${DOCKER_HUB_PASS}'
+                    
+                        sh 'docker login -u saicharan6771 -p welcome@123'
                         sh "docker image push saicharanakkapeddi/${IMAGE_NAME}:${IMAGE_TAG}"
                         sh "docker image push saicharanakkapeddi/${IMAGE_NAME}:latest"
                     }
@@ -95,4 +95,4 @@ pipeline {
             }
         }
     }
-}
+
