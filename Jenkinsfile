@@ -45,10 +45,8 @@ pipeline {
         stage('Upload WAR to Nexus') {
             steps {
                 script {
-
                     def readPomVersion = readMavenPom file: 'pom.xml'
-
-                    def nexusRepo = readPomVersion.version.endsWith("SNAPSHOT") ? "demoapp-snapshot":"nexus-reposite"
+                    def nexusRepo = readPomVersion.version.endsWith("SNAPSHOT") ? "demoapp-snapshot" : "nexus-reposite"
                     nexusArtifactUploader(
                         artifacts: [
                             [
@@ -60,7 +58,7 @@ pipeline {
                         ],
                         credentialsId: 'nexus-auth',
                         groupId: 'com.example',
-                        nexusUrl: '3.7.46.54:8081',
+                        nexusUrl: 'http://3.7.46.54:8081',
                         nexusVersion: 'nexus3',
                         protocol: 'http',
                         repository: nexusRepo,
@@ -69,15 +67,17 @@ pipeline {
                 }
             }
         }
-        stage('docker image build'){
-            steps{
-                script{
-                    sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID .'
-                    sh 'docker image tag $JOB_NAME:v1.$BUILD_ID Sai Charan Akkapeddi/$JOB_NAME:v1.$BUILD_ID'
-                    sh 'docker image tag $JOB_NAME:v1.$BUILD_ID Sai Charan Akkapeddi/$JOB_NAME:latest'
+
+        stage('Docker Image Build') {
+            steps {
+                script {
+                    def imageName = "${JOB_NAME}"
+                    def imageTag = "v1.${BUILD_ID}"
+                    sh "docker image build -t ${imageName}:${imageTag} ."
+                    sh "docker image tag ${imageName}:${imageTag} saicharanakkapeddi/${imageName}:${imageTag}"
+                    sh "docker image tag ${imageName}:${imageTag} saicharanakkapeddi/${imageName}:latest"
                 }
             }
         }
-
     }
 }
