@@ -87,7 +87,7 @@ pipeline {
             steps {
                 script {
                     
-                        sh 'docker login -u saicharan6771 -p welcome@123'
+                        sh 'docker login -u saicharan6771 -p Welcome@123'
                         sh "docker image push saicharanakkapeddi/${IMAGE_NAME}:${IMAGE_TAG}"
                         sh "docker image push saicharanakkapeddi/${IMAGE_NAME}:latest"
                     }
