@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "${JOB_NAME}"
+        IMAGE_TAG = "v1.${BUILD_ID}"
+    }
+
     stages {
         stage('Git Checkout') {
             steps {
@@ -71,25 +76,22 @@ pipeline {
         stage('Docker Image Build') {
             steps {
                 script {
-                    def imageName = "${JOB_NAME}"
-                    def imageTag = "v1.${BUILD_ID}"
-                    sh "docker image build -t ${imageName}:${imageTag} ."
-                    sh "docker image tag ${imageName}:${imageTag} saicharanakkapeddi/${imageName}:${imageTag}"
-                    sh "docker image tag ${imageName}:${imageTag} saicharanakkapeddi/${imageName}:latest"
+                    sh "docker image build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                    sh "docker image tag ${IMAGE_NAME}:${IMAGE_TAG} saicharanakkapeddi/${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker image tag ${IMAGE_NAME}:${IMAGE_TAG} saicharanakkapeddi/${IMAGE_NAME}:latest"
                 }
             }
         }
-        stage ('push docker image to dockerhub') {
+
+        stage('Push Docker Image to DockerHub') {
             steps {
-
-                script{
-                    withCredentials([string(credentialsId: 'git_creds', variable: 'docker_hub_cred')]) {
-                        sh 'docker login -u saicharan6771 -p ${docker_hub_cred}'
-                        sh 'docker image push saicharanakkapeddi/${imageName}:${imageTag}'
-                        sh 'docker image push saicharanakkapeddi/${imageName}:latest'
-                 }
+                script {
+                    withCredentials([string(credentialsId: 'docker_hub_cred', variable: 'DOCKER_HUB_PASS')]) {
+                        sh 'docker login -u saicharan6771 -p ${DOCKER_HUB_PASS}'
+                        sh "docker image push saicharanakkapeddi/${IMAGE_NAME}:${IMAGE_TAG}"
+                        sh "docker image push saicharanakkapeddi/${IMAGE_NAME}:latest"
+                    }
                 }
-
             }
         }
     }
