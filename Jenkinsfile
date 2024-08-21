@@ -77,8 +77,8 @@ pipeline {
             steps {
                 script {
                     sh "docker image build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
-                    sh "docker image tag ${IMAGE_NAME}:${IMAGE_TAG} saicharanakkapeddi/${IMAGE_NAME}:${IMAGE_TAG}"
-                    sh "docker image tag ${IMAGE_NAME}:${IMAGE_TAG} saicharanakkapeddi/${IMAGE_NAME}:latest"
+                    sh "docker image tag ${IMAGE_NAME}:${IMAGE_TAG} saicharan6771/${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker image tag ${IMAGE_NAME}:${IMAGE_TAG} saicharan6771/${IMAGE_NAME}:latest"
                 }
             }
         }
@@ -88,8 +88,8 @@ pipeline {
                 script {
                     
                         sh 'docker login -u saicharan6771 -p Welcome@123'
-                        sh "docker image push saicharanakkapeddi/${IMAGE_NAME}:${IMAGE_TAG}"
-                        sh "docker image push saicharanakkapeddi/${IMAGE_NAME}:latest"
+                        sh "docker image push saicharan6771/${IMAGE_NAME}:${IMAGE_TAG}"
+                        sh "docker image push saicharan6771/${IMAGE_NAME}:latest"
                     }
                 }
             }
