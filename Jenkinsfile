@@ -58,7 +58,7 @@ pipeline {
                         ],
                         credentialsId: 'nexus-auth',
                         groupId: 'com.example',
-                        nexusUrl: '3.7.46.54:8081',
+                        nexusUrl: 'http://3.7.46.54:8081',
                         nexusVersion: 'nexus3',
                         protocol: 'http',
                         repository: nexusRepo,
@@ -68,28 +68,22 @@ pipeline {
             }
         }
 
-        stage('Docker Image Build') {
+        stage('docker image build') {
             steps {
                 script {
-                    def imageName = "${JOB_NAME}"
-                    def imageTag = "v1.${BUILD_ID}"
-                    sh "docker image build -t ${imageName}:${imageTag} ."
-                    sh "docker image tag ${imageName}:${imageTag} saicharanakkapeddi/${imageName}:${imageTag}"
-                    sh "docker image tag ${imageName}:${imageTag} saicharanakkapeddi/${imageName}:latest"
+                    sh 'docker image build -t saicharan6771/demoapp:v1.$BUILD_ID .'
+                    sh 'docker image tag saicharan6771/demoapp:v1.$BUILD_ID saicharan6771/demoapp:latest'
                 }
             }
         }
-        stage ('push docker image to dockerhub') {
+
+        stage('Push Docker Image') {
             steps {
-
-                script{
-                    withCredentials([string(credentialsId: 'git_creds', variable: 'docker_hub_cred')]) {
-                        sh 'docker login -u saicharan6771 -p ${docker_hub_cred}'
-                        sh 'docker image push saicharanakkapeddi/${imageName}:${imageTag}'
-                        sh 'docker image push saicharanakkapeddi/${imageName}:latest'
-                 }
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                    sh 'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin'
+                    sh 'docker image push saicharan6771/demoapp:v1.$BUILD_ID'
+                    sh 'docker image push saicharan6771/demoapp:latest'
                 }
-
             }
         }
     }
