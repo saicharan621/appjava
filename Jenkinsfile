@@ -79,5 +79,18 @@ pipeline {
                 }
             }
         }
+        stage ('push docker image to dockerhub') {
+            steps {
+
+                script{
+                    withCredentials([string(credentialsId: 'git_creds', variable: 'docker_hub_cred')]) {
+                        sh 'docker login -u saicharan6771 -p ${docker_hub_cred}'
+                        sh 'docker image push saicharanakkapeddi/${imageName}:${imageTag}'
+                        sh 'docker image push saicharanakkapeddi/${imageName}:latest'
+                 }
+                }
+
+            }
+        }
     }
 }
