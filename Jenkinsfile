@@ -33,8 +33,10 @@ pipeline {
 
         stage('Static Code Analysis') {
             steps {
-                withSonarQubeEnv(installationName: 'sonarqube server', credentialsId: 'sonarqube-api') {
-                    sh 'mvn clean package sonar:sonar'
+                script {
+                    withSonarQubeEnv(credentialsId: 'sonar-now') {
+                        sh 'mvn clean package sonar:sonar'
+                    }
                 }
             }
         }
@@ -63,7 +65,7 @@ pipeline {
                         ],
                         credentialsId: 'nexus-auth',
                         groupId: 'com.example',
-                        nexusUrl: '3.7.46.54:8081',
+                        nexusUrl: '172.31.13.47:8081',
                         nexusVersion: 'nexus3',
                         protocol: 'http',
                         repository: nexusRepo,
@@ -86,13 +88,11 @@ pipeline {
         stage('Push Docker Image to DockerHub') {
             steps {
                 script {
-                    
-                        sh 'docker login -u saicharan6771 -p Welcome@123'
-                        sh "docker image push saicharan6771/${IMAGE_NAME}:${IMAGE_TAG}"
-                        sh "docker image push saicharan6771/${IMAGE_NAME}:latest"
-                    }
+                    sh 'docker login -u saicharan6771 -p Welcome@123'
+                    sh "docker image push saicharan6771/${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker image push saicharan6771/${IMAGE_NAME}:latest"
                 }
             }
         }
     }
-
+}
