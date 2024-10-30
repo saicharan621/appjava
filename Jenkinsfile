@@ -44,7 +44,7 @@ pipeline {
         stage('Quality Gate Status') {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: false,credentialsId: 'sonar-now'
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-now'
                 }
             }
         }
@@ -68,7 +68,7 @@ pipeline {
                         nexusUrl: '13.201.184.69:8081',
                         nexusVersion: 'nexus3',
                         protocol: 'http',
-                        repository: 'nexus-reposite',
+                        repository: nexusRepo, // Use dynamic repository selection
                         version: "${readPomVersion.version}"
                     )
                 }
