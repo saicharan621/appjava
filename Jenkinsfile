@@ -7,7 +7,7 @@ pipeline {
     }
 
     stages {
-        // ... [Your existing stages]
+        
 
         stage('Docker Image Build') {
             steps {
@@ -37,7 +37,7 @@ pipeline {
                     sh "docker stop my-app || true"
                     sh "docker rm my-app || true"
                     
-                    // Run the new container
+                    
                     sh "docker run -d -p 8081:9099 --name my-app saicharan6771/${IMAGE_NAME}:latest"
                 }
             }
