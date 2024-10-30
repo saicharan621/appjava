@@ -5,6 +5,8 @@ pipeline {
         IMAGE_NAME = "${JOB_NAME}"
         IMAGE_TAG = "v1.${BUILD_ID}"
         DEPLOY_ENV = "${params.DEPLOY_ENV}" // Parameter for the deployment environment
+        DOCKER_USERNAME = "saicharan6711" // Your Docker Hub username
+        DOCKER_PASSWORD = "Welcome@123" // Your Docker Hub password
     }
 
     parameters {
@@ -16,8 +18,8 @@ pipeline {
             steps {
                 script {
                     sh "docker image build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
-                    sh "docker image tag ${IMAGE_NAME}:${IMAGE_TAG} saicharan6771/${IMAGE_NAME}:${IMAGE_TAG}"
-                    sh "docker image tag ${IMAGE_NAME}:${IMAGE_TAG} saicharan6771/${IMAGE_NAME}:latest"
+                    sh "docker image tag ${IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker image tag ${IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_USERNAME}/${IMAGE_NAME}:latest"
                 }
             }
         }
@@ -25,9 +27,10 @@ pipeline {
         stage('Push Docker Image to DockerHub') {
             steps {
                 script {
-                    sh 'docker login -u saicharan6771 -p $DOCKER_HUB_PASSWORD'
-                    sh "docker image push saicharan6771/${IMAGE_NAME}:${IMAGE_TAG}"
-                    sh "docker image push saicharan6771/${IMAGE_NAME}:latest"
+                    // Log in to Docker Hub
+                    sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                    sh "docker image push ${DOCKER_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker image push ${DOCKER_USERNAME}/${IMAGE_NAME}:latest"
                 }
             }
         }
@@ -48,7 +51,7 @@ pipeline {
                     sh "docker stop my-app-${DEPLOY_ENV} || true"
                     sh "docker rm my-app-${DEPLOY_ENV} || true"
                     
-                    sh "docker run -d -p ${port}:9099 --name my-app-${DEPLOY_ENV} saicharan6771/${IMAGE_NAME}:latest"
+                    sh "docker run -d -p ${port}:9099 --name my-app-${DEPLOY_ENV} ${DOCKER_USERNAME}/${IMAGE_NAME}:latest"
                 }
             }
         }
