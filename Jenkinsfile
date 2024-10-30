@@ -5,7 +5,7 @@ pipeline {
         IMAGE_NAME = "${JOB_NAME}"
         IMAGE_TAG = "v1.${BUILD_ID}"
         DEPLOY_ENV = "${params.DEPLOY_ENV}" // Parameter for the deployment environment
-        DOCKER_USERNAME = "saicharan6711" // Your Docker Hub username
+        DOCKER_USERNAME = "saicharan6771" // Your Docker Hub username
         DOCKER_PASSWORD = "Welcome@123" // Your Docker Hub password
     }
 
