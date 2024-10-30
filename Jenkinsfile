@@ -44,7 +44,7 @@ pipeline {
                     } else if (DEPLOY_ENV == 'UAT') {
                         port = "8083"
                     } else if (DEPLOY_ENV == 'Prod') {
-                        port = "8081"
+                        port = "8084"
                     }
                     
                     // Stop and remove the existing container if it exists
