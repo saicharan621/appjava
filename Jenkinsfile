@@ -7,73 +7,7 @@ pipeline {
     }
 
     stages {
-        stage('Git Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/saicharan621/appjava.git'
-            }
-        }
-
-        stage('Unit Testing') {
-            steps {
-                sh 'mvn test'
-            }
-        }
-
-        stage('Integration Testing') {
-            steps {
-                sh 'mvn verify -DskipUnitTests'
-            }
-        }
-
-        stage('Maven Build') {
-            steps {
-                sh 'mvn clean install'
-            }
-        }
-
-        stage('Static Code Analysis') {
-            steps {
-                script {
-                    withSonarQubeEnv(credentialsId: 'sonar-now') {
-                        sh 'mvn clean package sonar:sonar'
-                    }
-                }
-            }
-        }
-
-        stage('Quality Gate Status') {
-            steps {
-                script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-now'
-                }
-            }
-        }
-
-        stage('Upload WAR to Nexus') {
-            steps {
-                script {
-                    def readPomVersion = readMavenPom file: 'pom.xml'
-                    def nexusRepo = readPomVersion.version.endsWith("SNAPSHOT") ? "demoapp-snapshot" : "nexus-reposite"
-                    nexusArtifactUploader(
-                        artifacts: [
-                            [
-                                artifactId: 'springboot',
-                                classifier: '',
-                                file: 'target/Uber.jar',
-                                type: 'jar'
-                            ]
-                        ],
-                        credentialsId: 'nexus-auth',
-                        groupId: 'com.example',
-                        nexusUrl: '3.111.47.36:8081',
-                        nexusVersion: 'nexus3',
-                        protocol: 'http',
-                        repository: nexusRepo, // Use dynamic repository selection
-                        version: "${readPomVersion.version}"
-                    )
-                }
-            }
-        }
+        // ... [Your existing stages]
 
         stage('Docker Image Build') {
             steps {
@@ -91,6 +25,20 @@ pipeline {
                     sh 'docker login -u saicharan6771 -p Welcome@123'
                     sh "docker image push saicharan6771/${IMAGE_NAME}:${IMAGE_TAG}"
                     sh "docker image push saicharan6771/${IMAGE_NAME}:latest"
+                }
+            }
+        }
+
+        // New deployment stage
+        stage('Deploy Docker Container') {
+            steps {
+                script {
+                    // Stop and remove the existing container if it exists
+                    sh "docker stop my-app || true"
+                    sh "docker rm my-app || true"
+                    
+                    // Run the new container
+                    sh "docker run -d -p 8080:8080 --name my-app saicharan6771/${IMAGE_NAME}:latest"
                 }
             }
         }
