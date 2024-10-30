@@ -65,7 +65,7 @@ pipeline {
                         ],
                         credentialsId: 'nexus-auth',
                         groupId: 'com.example',
-                        nexusUrl: '13.201.184.69:8081',
+                        nexusUrl: '3.111.47.36:8081',
                         nexusVersion: 'nexus3',
                         protocol: 'http',
                         repository: nexusRepo, // Use dynamic repository selection
